@@ -2,6 +2,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
 } from 'firebase/auth';
 
 interface User {
@@ -14,14 +15,7 @@ export const useFirebaseAuth = () => {
 
   const register = async (_user: User) => {
     try {
-      const userCredentials = await createUserWithEmailAndPassword(
-        $auth,
-        _user.email,
-        _user.password
-      );
-
-      const user = userCredentials.user;
-      console.log(user);
+      await createUserWithEmailAndPassword($auth, _user.email, _user.password);
     } catch (error) {
       console.log(error);
     }
@@ -29,14 +23,7 @@ export const useFirebaseAuth = () => {
 
   const login = async (_user: User) => {
     try {
-      const userCredentials = await signInWithEmailAndPassword(
-        $auth,
-        _user.email,
-        _user.password
-      );
-
-      const user = userCredentials.user;
-      console.log(user);
+      await signInWithEmailAndPassword($auth, _user.email, _user.password);
     } catch (error) {
       console.log(error);
     }
@@ -47,5 +34,15 @@ export const useFirebaseAuth = () => {
     await navigateTo('/login');
   };
 
-  return { register, login, logout };
+  const currentUserPromise = () =>
+    new Promise((resolve) => {
+      const unsubscribe = onAuthStateChanged($auth, (user) => {
+        unsubscribe();
+        resolve(user);
+      });
+    });
+
+  const currentUser = () => $auth.currentUser;
+
+  return { register, login, logout, currentUserPromise, currentUser };
 };

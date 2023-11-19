@@ -1,4 +1,3 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
@@ -10,6 +9,10 @@ export default defineNuxtConfig({
       messagingSenderId: process.env.FIREBASE_MESSAGINGSENDERID,
       appId: process.env.FIREBASE_APPID,
     },
+  },
+  routeRules: {
+    '/': { prerender: true },
+    '/admin/**': { ssr: false },
   },
   modules: ['@nuxt/ui'],
 });

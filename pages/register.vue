@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import Joi from 'joi';
 import type { FormSubmitEvent } from '#ui/types';
-import type { UForm } from '#ui-colors/components';
 
 const { register } = useFirebaseAuth();
 const toast = useToast();
 
 const schema = Joi.object({
-  email: Joi.string().required(),
+  email: Joi.string()
+    .email({
+      tlds: { allow: ['com'] },
+    })
+    .required(),
   password: Joi.string().min(6).required(),
 });
 
@@ -36,10 +39,10 @@ const handleSubmit = (event: FormSubmitEvent<any>) => {
       @submit="handleSubmit"
     >
       <UFormGroup label="Correo" name="email">
-        <UInput type="email" v-model="user.email" />
+        <UInput type="email" v-model.trim="user.email" />
       </UFormGroup>
       <UFormGroup label="Contraseña" name="password">
-        <UInput type="password" v-model="user.password" />
+        <UInput type="password" v-model.trim="user.password" />
       </UFormGroup>
       <UButton class="w-fit" type="submit">Registrarme</UButton>
     </UForm>

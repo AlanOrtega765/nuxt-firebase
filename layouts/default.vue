@@ -4,7 +4,7 @@
   <UContainer>
     <UCard class="mt-10">
       <template #header>
-        <div class="flex justify-between">
+        <div class="flex items-center justify-between">
           <h1>Welcome to Nuxt UI Starter</h1>
           <ColorScheme
             ><USelect
